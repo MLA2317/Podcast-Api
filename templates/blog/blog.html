@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/blog.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/blog_responsive.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="home">
+             <div class="background_image" style="background-image:url({% static 'images/blog.jpg' %})"></div>
+        <div class="home_container d-flex flex-column align-items-center justify-content-center">
+            <div class="home_content">
+                <div class="home_title"><h1>blog</h1></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="blog">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-3 order-lg-1 order-2 sidebar_col">
+                    <div class="sidebar">
+
+                        <div class="sidebar_search">
+                            <div class="sidebar_title">Search</div>
+                            <form action="#" class="search_form" id="search_form">
+                                <input type="text" class="search_input" placeholder="Search here" required="required">
+                                <button class="search_button"><img src="{% static 'images/search.png' %}" alt=""></button>
+                            </form>
+                        </div>
+
+                        <div class="sidebar_list">
+                            <div class="sidebar_title">Categories</div>
+                            <ul>
+                                {% for cat in category %}
+                                    <li><a href="{% url 'blog:blog' %}?cat={{ cat }}">{{ cat.title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="sidebar_tags">
+                            <div class="sidebar_title">Tags</div>
+                            <div class="tags">
+                                <ul class="d-flex flex-row align-items-start justify-content-start flex-wrap">
+                                    {% for tag in tags %}
+                                        <li><a href="{% url 'blog:blog' %}?tag={{ tag }}">{{ tag.title }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="sidebar_archive">
+                            <div class="sidebar_title">Archive</div>
+                            <div class="dropdown">
+                                <ul>
+                                    <li class="dropdown_selected d-flex flex-row align-items-center justify-content-start">
+                                        <span>September 2018</span><i class="fa fa-chevron-down ml-auto"
+                                                                      aria-hidden="true"></i>
+                                        <ul>
+                                            <li><a href="#">August 2018</a></li>
+                                            <li><a href="#">July 2018</a></li>
+                                            <li><a href="#">June 2018</a></li>
+                                            <li><a href="#">May 2018</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-9 blog_col order-lg-2 order-1">
+                    <div class="blog_posts">
+                       {% for obj in objects %}
+                        <div class="blog_post d-flex flex-md-row flex-column align-items-start justify-content-start">
+                            <div class="blog_post_image">
+                                <img src="{{ obj.image.url }}" style="width:320px" alt="https://unsplash.com/@kellysikkema">
+                                <div class="blog_post_date"><a href="{% url 'blog:blogs' obj.id %}">{{ obj.created_date|date:"M d, Y" }}</a></div>
+                            </div>
+                            <div class="blog_post_content">
+                                <div class="blog_post_title"><a href="{% url 'blog:blogs' obj.id %}">{{ obj.title }}</a></div>
+                                <div class="blog_post_author">By <a href="{% url 'about:about' %}">{{ obj.author }}</a></div>
+                                <div class="blog_post_text">
+                                    <p>{{ obj.description }}</p>
+                                </div>
+                                <div class="blog_post_link"><a href="{% url 'blog:blogs' obj.id %}">Read More</a></div>
+                            </div>
+                        </div>
+                       {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row page_nav_row">
+                <div class="col">
+                    <div class="page_nav d-flex flex-row align-items-center justify-content-center">
+                        <ul class="d-flex flex-row">
+                           {% if objects.has_previous %}
+                             <li class="active"><a href="?page={{ objects.previous_page_number }}"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li>
+                        {% endif %}
+                        {% for page_item in objects.paginator.page_range %}
+                            <li class="{% if page_item == objects.number %} active {% endif %}"><a href="?page={{ page_item }}"><span>{{ page_item }}</span></a></li>
+                        {% endfor %}
+                        {% if objects.has_next %}
+                            <li class="active"><a href="?page={{ objects.next_page_number }}"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>
+                        {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+  <script src="{% static 'js/blog.js' %}"></script>
+{% endblock %}
